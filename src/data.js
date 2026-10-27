@@ -6,21 +6,32 @@ export const projects = [
     desc: 'Three tailored AI chatbots for engineering, commerce, and pharmaceutical institutes, designed to answer admissions, fees, lab, and academic-policy questions.',
     tags: ['Python', 'Flask', 'React 19', 'Vite', 'RAG', 'Gemini API', 'Groq API', 'SSE', 'Web Speech API'],
     results: ['Indexed 160+ knowledge-base topics', 'Built Gemini-to-Groq automated failover', 'Delivered sub-second query responses', 'Added voice input/output, quick FAQ chips, feedback, and a mobile-first UI', 'Reduced administrative inquiries by 70%'],
-    study: 'Each institute (CKPCET, CKPCMC, CKPIPSR) has its own knowledge base. Answers stream to the React UI over Server-Sent Events. Gemini is the primary model; if it fails, requests fail over automatically to Groq. Retrieval and generation latency are logged as structured JSON.'
+    study: 'Each institute (CKPCET, CKPCMC, CKPIPSR) has its own knowledge base. Answers stream to the React UI over Server-Sent Events. Gemini is the primary model; if it fails, requests fail over automatically to Groq. Retrieval and generation latency are logged as structured JSON.',
+    github: 'https://github.com/kashyapsharma07/Multi-Department-Institutional-AI-Chatbots'
   },
   {
     cat: 'Computer Vision', title: 'AI-Powered CCTV Surveillance for Industrial Safety', kind: 'cctv',
     desc: 'Real-time industrial safety monitoring using CCTV footage and YOLOv8 to detect helmets, safety vests, and people in hazardous zones.',
     tags: ['Python', 'YOLOv8', 'OpenCV', 'Streamlit'],
     results: ['Achieved 92% mAP', 'Built live video processing and annotated detection views', 'Added automated alerts and compliance analytics', 'Reduced manual safety audits by 70%'],
-    study: 'Built during the Intel AI for Manufacturing program. A YOLOv8 model detects helmets, vests and personnel; a Streamlit dashboard shows annotated frames, raises alerts for supervisors and summarises compliance.'
+    study: 'Built during the Intel AI for Manufacturing program. A YOLOv8 model detects helmets, vests and personnel; a Streamlit dashboard shows annotated frames, raises alerts for supervisors and summarises compliance.',
+    github: 'https://github.com/kashyapsharma07/AI-Powered-CCTV-Surveillance-for-Industrial-Safety'
   },
   {
     cat: 'Full-stack Web Application', title: 'Job Application Tracker', kind: 'dash',
     desc: 'A role-based application tracking platform that helps users organize job applications, reminders, résumés, and performance analytics.',
     tags: ['PHP', 'MySQL', 'JavaScript', 'Bootstrap', 'JWT', '2FA', 'PHPMailer', 'Cron Jobs', 'Google Drive'],
     results: ['Role-based access for Superadmin, Admin, and User', 'JWT authentication and two-factor authentication', 'Password reset flows and secure email handling', 'Automated backups and reminders', 'Analytics for applications, companies, timelines, and success rates'],
-    study: 'A relational MySQL schema covers applications, résumés and reminders. Cron jobs send email reminders and back up the database to Google Drive. The dashboard charts status, company-wise results and timelines.'
+    study: 'A relational MySQL schema covers applications, résumés and reminders. Cron jobs send email reminders and back up the database to Google Drive. The dashboard charts status, company-wise results and timelines.',
+    github: 'https://github.com/kashyapsharma07/Job-Application-Tracker'
+  },
+  {
+    cat: 'Embedded Systems & IoT', title: 'Smart Bluetooth Rover', kind: 'rover',
+    desc: 'An autonomous and teleoperated smart rover controlled via Bluetooth connectivity, featuring obstacle avoidance sensors, real-time motor actuation, and remote telemetry.',
+    tags: ['Arduino', 'C++', 'Bluetooth HC-05', 'Embedded C', 'L298N Motor Driver', 'Ultrasonic Sensors', 'Robotics'],
+    results: ['Wireless telemetry and low-latency motor control over Bluetooth', 'Automated obstacle detection and collision avoidance algorithms', 'Custom smartphone gamepad controller mapping', 'Optimized power distribution for sustained outdoor navigation'],
+    study: 'Engineered using Arduino and C++. Features an HC-05 Bluetooth module communicating with an Android remote interface to send serial directional packets. Integrated HC-SR04 ultrasonic sensors calculate real-time distance vectors, dynamically overriding manual commands to prevent front and side collisions.',
+    github: 'https://github.com/kashyapsharma07/Smart-Bluetooth-Rover'
   }]
 export const skills = [
   ['AI & Machine Learning', 'RAG, Gemini API, Groq API, NLP, Sentence Transformers, Vector Search, YOLOv8, OpenCV, Scikit-learn, Streamlit'],

@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform, useSpring } from 'framer-motion'
-import { Github, Linkedin, Mail, Menu, X, Copy, Check, ChevronDown, Download } from 'lucide-react'
+import { Github, Linkedin, Mail, Menu, X, Copy, Check, ChevronDown, Download, ExternalLink } from 'lucide-react'
 import Lenis from 'lenis'
 import Scene3D from './Scene3D.jsx'
 import SpotlightCard from './SpotlightCard.jsx'
+import Preloader from './Preloader.jsx'
 import Network from './Network.jsx'
 import { LINKS, chapters, projects, skills, timeline } from './data.js'
 
@@ -197,6 +198,35 @@ function Visual({ kind, title, progress }) {
         <span className="text-paper/80">RBAC + 2FA Active</span>
       </div>
     </div>}
+
+    {kind === 'rover' && <div className={box}>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1a1714] to-[#0c0b0a]" />
+      <div className="relative z-10 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-ember animate-ping opacity-75" />
+          <span className="text-[11px] font-mono text-paper/85">HC-05 CONNECTED</span>
+        </div>
+        <span className="text-[10px] font-mono text-mute px-2 py-0.5 rounded border border-line bg-ink/60">38400 BAUD</span>
+      </div>
+
+      <div className="relative z-10 my-4 flex flex-col items-center justify-center">
+        {/* Radar Ping Circle */}
+        <div className="relative w-32 h-32 rounded-full border border-line flex items-center justify-center">
+          <div className="absolute inset-2 rounded-full border border-dashed border-paper/20" />
+          <div className="absolute inset-8 rounded-full border border-ember/30" />
+          <div className="h-3 w-3 rounded-full bg-ember shadow-[0_0_12px_#ff4d2e]" />
+          {/* Obstacle Distance Tag */}
+          <div className="absolute -top-3 bg-ink border border-line rounded px-2 py-0.5 text-[10px] font-mono text-paper">
+            RADAR: <span className="text-ember">24 cm</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 border-t border-line pt-3 flex items-center justify-between text-xs text-mute font-mono">
+        <span>ACTUATION: L298N DUAL</span>
+        <span className="text-ember">AUTO-BRAKE OK</span>
+      </div>
+    </div>}
   </figure>
 }
 
@@ -225,6 +255,18 @@ function ProjectCard({ p, i }) {
                 {p.results.map(r => <li key={r} className="flex gap-3"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-ember shrink-0" />{r}</li>)}
               </ul>
               <div className="mt-7 flex flex-wrap items-center gap-5 text-sm">
+                {p.github && (
+                  <a
+                    href={p.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="border border-paper/30 hover:border-ember hover:text-ember px-4 py-2 rounded-full transition inline-flex items-center gap-2 text-paper text-sm font-medium"
+                  >
+                    <Github size={15} />
+                    <span>View Repository</span>
+                    <ExternalLink size={13} className="text-mute group-hover:text-ember" />
+                  </a>
+                )}
                 <button onClick={() => setOpen(!open)} aria-expanded={open} className="link-u inline-flex items-center gap-1">
                   View case study<ChevronDown size={16} className={`transition ${open ? 'rotate-180' : ''}`} />
                 </button>
@@ -335,11 +377,6 @@ export default function App() {
   const rm = useReducedMotion()
 
   useEffect(() => {
-    const t = setTimeout(() => setReady(true), 500)
-    return () => clearTimeout(t)
-  }, [])
-
-  useEffect(() => {
     if (rm) return
     const lenis = new Lenis({
       duration: 1.2,
@@ -358,11 +395,13 @@ export default function App() {
   }, [rm])
 
   return <>
-    <AnimatePresence>{!ready && <motion.div exit={{ opacity: 0 }} transition={{ duration: .4 }} className="fixed inset-0 z-[70] bg-ink grid place-items-center" aria-hidden="true"><span className="font-display text-4xl">KS<span className="text-ember">.</span></span></motion.div>}</AnimatePresence>
+    <AnimatePresence mode="wait">
+      {!ready && <Preloader onComplete={() => setReady(true)} />}
+    </AnimatePresence>
     <a href="#about" className="sr-only focus:not-sr-only focus:fixed focus:z-[80] focus:top-3 focus:left-3 bg-paper text-ink px-4 py-2 rounded">Skip to content</a>
     <Scene3D />
     <Nav /><main className="relative z-10"><Hero /><ChapterStrip /><About />
-      <Section id="projects" n="02" label="Selected work" title="Three projects, built to be used.">
+      <Section id="projects" n="02" label="Selected work" title="Featured projects, built to be used.">
         <div className="space-y-10">{projects.map((p, i) => <ProjectCard key={p.title} p={p} i={i} />)}</div></Section>
       <Skills /><Experience /><Contact /></main>
     <footer className="relative z-10 border-t border-line"><div className="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row gap-6 justify-between text-sm text-mute">
