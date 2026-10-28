@@ -111,6 +111,180 @@ function About() {
       <Reveal delay={.1}><ul className="divide-y divide-line border-y border-line">{hl.map(h => <li key={h} className="py-4 text-paper/85">{h}</li>)}</ul></Reveal></div></Section>
 }
 
+function RoverVisual({ box }) {
+  const [blueprintMode, setBlueprintMode] = useState(false)
+  const [activePin, setActivePin] = useState(null)
+
+  const pins = [
+    {
+      id: 'bt',
+      title: 'HC-05 Bluetooth Module',
+      spec: 'SPP 2.4GHz · 38400 Baud UART',
+      x: '21%',
+      y: '52%',
+      badgeAlign: 'left',
+      tooltipDir: 'top',
+    },
+    {
+      id: 'shield',
+      title: 'HW-130 / L293D Shield + Uno',
+      spec: 'Dual H-Bridge · 4-Ch PWM Driver',
+      x: '46%',
+      y: '48%',
+      badgeAlign: 'center',
+      tooltipDir: 'top',
+    },
+
+    {
+      id: 'battery',
+      title: '2x 18650 Li-ion Pack',
+      spec: '7.4V 2600mAh · High-Drain Cells',
+      x: '79%',
+      y: '52%',
+      badgeAlign: 'right',
+      tooltipDir: 'top',
+    },
+    {
+      id: 'switch',
+      title: 'Master Rocker Switch',
+      spec: 'Circuit Isolation & Safety Cutoff',
+      x: '78%',
+      y: '27%',
+      badgeAlign: 'right',
+      tooltipDir: 'bottom',
+    },
+    {
+      id: 'motor',
+      title: '4WD TT Geared Motors',
+      spec: 'Differential Steering · High-Traction',
+      x: '11%',
+      y: '16%',
+      badgeAlign: 'left',
+      tooltipDir: 'bottom',
+    },
+  ]
+
+  const activeData = activePin ? pins.find(p => p.id === activePin) : null
+
+  return (
+    <div className={box}>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#181512] via-[#0f0e0d] to-[#080707]" />
+      <div
+        className="absolute inset-0 opacity-[0.06] pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(#ff4d2e 1px, transparent 1px), linear-gradient(90deg, #ff4d2e 1px, transparent 1px)',
+          backgroundSize: '20px 20px',
+        }}
+      />
+
+      {/* Header Telemetry */}
+      <div className="relative z-20 flex items-center justify-between pb-2.5 border-b border-line/60">
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ember opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-ember" />
+          </span>
+          <span className="text-[11px] font-mono tracking-wider text-paper/90 font-medium">
+            SKELETAL_HARDWARE · TOP_VIEW
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setBlueprintMode(!blueprintMode)}
+          aria-label="Toggle blueprint HUD filter"
+          className="text-[10px] font-mono px-2 py-0.5 rounded border border-line/80 bg-ink/70 hover:border-ember hover:text-ember transition flex items-center gap-1.5 text-mute"
+        >
+          <span className={`h-1.5 w-1.5 rounded-full transition-colors ${blueprintMode ? 'bg-ember' : 'bg-mute'}`} />
+          <span>{blueprintMode ? 'BLUEPRINT HUD' : 'HARDWARE PHOTO'}</span>
+        </button>
+      </div>
+
+      {/* Rover Image Frame with Skeletal HUD Callouts */}
+      <div className="relative z-10 my-3 rounded-lg overflow-hidden border border-line/70 bg-black/50 flex items-center justify-center min-h-[190px]">
+        {/* CAD Reticles */}
+        <div className="absolute top-1.5 left-2 text-[9px] font-mono text-ember/70 pointer-events-none z-20">┌ HC05:OK</div>
+        <div className="absolute top-1.5 right-2 text-[9px] font-mono text-ember/70 pointer-events-none z-20">BAT:7.4V ┐</div>
+        <div className="absolute bottom-1.5 left-2 text-[9px] font-mono text-paper/40 pointer-events-none z-20">└ 4WD_TT</div>
+        <div className="absolute bottom-1.5 right-2 text-[9px] font-mono text-paper/40 pointer-events-none z-20">38.4k ┘</div>
+
+        {/* Laser Diagnostics Scanline */}
+        <motion.div
+          animate={{ y: ['-100%', '280%'] }}
+          transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
+          className="absolute inset-x-0 h-10 bg-gradient-to-b from-transparent via-ember/25 to-transparent pointer-events-none z-10"
+        />
+
+        {/* Rover Photograph */}
+        <picture className="w-full h-full flex items-center justify-center p-1">
+          <source srcSet="/Rover-optimized.webp" type="image/webp" />
+          <img
+            src="/Rover.png"
+            alt="Skeletal hardware photograph of Smart Bluetooth Rover chassis"
+            className={`w-full max-h-[200px] sm:max-h-[220px] object-contain transition-all duration-500 ${blueprintMode
+              ? 'filter contrast-150 brightness-90 saturate-50 hue-rotate-[190deg] invert-[0.1]'
+              : 'filter brightness-95 hover:brightness-105'
+              }`}
+          />
+        </picture>
+
+        {/* Interactive Hotspot Pins on Hardware Components */}
+        {pins.map((pin) => {
+          const isHovered = activePin === pin.id
+          return (
+            <div
+              key={pin.id}
+              style={{ left: pin.x, top: pin.y }}
+              className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
+              onMouseEnter={() => setActivePin(pin.id)}
+              onMouseLeave={() => setActivePin(null)}
+              onClick={() => setActivePin(activePin === pin.id ? null : pin.id)}
+            >
+              <button
+                type="button"
+                aria-label={pin.title}
+                className="relative group/pin flex items-center justify-center p-1.5 cursor-pointer focus:outline-none"
+              >
+                <span className="absolute h-4 w-4 rounded-full bg-ember/35 animate-ping opacity-75" />
+                <span className={`relative h-2.5 w-2.5 rounded-full border border-ink shadow-[0_0_8px_#ff4d2e] transition-transform ${isHovered ? 'scale-125 bg-paper' : 'bg-ember'}`} />
+              </button>
+
+              {/* Tooltip / Badge */}
+              <div
+                className={`pointer-events-none absolute z-30 transition-all duration-200 ${pin.tooltipDir === 'bottom' ? 'top-full mt-2' : 'bottom-full mb-2'
+                  } ${pin.badgeAlign === 'left'
+                    ? 'left-0'
+                    : pin.badgeAlign === 'right'
+                      ? 'right-0'
+                      : 'left-1/2 -translate-x-1/2'
+                  } ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                  }`}
+              >
+                <div className="bg-ink/95 border border-ember/60 px-2.5 py-1.5 rounded shadow-2xl text-left whitespace-nowrap backdrop-blur-md">
+                  <p className="text-[10px] font-mono font-semibold text-paper flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-ember" />
+                    {pin.title}
+                  </p>
+                  <p className="text-[9px] font-mono text-mute">{pin.spec}</p>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Dynamic Telemetry / Component Readout */}
+      <div className="relative z-10 pt-2 border-t border-line/60 flex items-center justify-between text-xs font-mono text-mute">
+        <span className="text-paper/90 truncate max-w-[65%]">
+          {activeData ? activeData.title : 'HC-05 · L293D / HW-130 · 7.4V LI-ION'}
+        </span>
+        <span className="text-ember font-medium shrink-0">
+          {activeData ? activeData.spec.split('·')[0] : 'TELEMETRY OK'}
+        </span>
+      </div>
+    </div>
+  )
+}
+
 // Scroll-reactive interactive visual mockup
 function Visual({ kind, title, progress }) {
   const box = 'rounded-xl border border-line bg-[#141210] p-6 h-full min-h-[260px] flex flex-col justify-between overflow-hidden relative'
@@ -199,34 +373,7 @@ function Visual({ kind, title, progress }) {
       </div>
     </div>}
 
-    {kind === 'rover' && <div className={box}>
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1a1714] to-[#0c0b0a]" />
-      <div className="relative z-10 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-ember animate-ping opacity-75" />
-          <span className="text-[11px] font-mono text-paper/85">HC-05 CONNECTED</span>
-        </div>
-        <span className="text-[10px] font-mono text-mute px-2 py-0.5 rounded border border-line bg-ink/60">38400 BAUD</span>
-      </div>
-
-      <div className="relative z-10 my-4 flex flex-col items-center justify-center">
-        {/* Radar Ping Circle */}
-        <div className="relative w-32 h-32 rounded-full border border-line flex items-center justify-center">
-          <div className="absolute inset-2 rounded-full border border-dashed border-paper/20" />
-          <div className="absolute inset-8 rounded-full border border-ember/30" />
-          <div className="h-3 w-3 rounded-full bg-ember shadow-[0_0_12px_#ff4d2e]" />
-          {/* Obstacle Distance Tag */}
-          <div className="absolute -top-3 bg-ink border border-line rounded px-2 py-0.5 text-[10px] font-mono text-paper">
-            RADAR: <span className="text-ember">24 cm</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="relative z-10 border-t border-line pt-3 flex items-center justify-between text-xs text-mute font-mono">
-        <span>ACTUATION: L298N DUAL</span>
-        <span className="text-ember">AUTO-BRAKE OK</span>
-      </div>
-    </div>}
+    {kind === 'rover' && <RoverVisual box={box} />}
   </figure>
 }
 
